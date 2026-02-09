@@ -440,6 +440,7 @@
 	.results-header h2 {
 		margin: 0;
 		color: #333;
+		font-weight: 600;
 	}
 
 	.count {
