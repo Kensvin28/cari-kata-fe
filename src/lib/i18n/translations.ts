@@ -16,8 +16,8 @@ export const translations = {
     excludedHint: "Must not contain",
     excludedPlaceholder: "e.g., xyz",
     fixed: "Fixed Positions",
-    fixedHint: "Format: position:letter (e.g., for 'air': 1:a, 2:i, 3:r)",
-    fixedPlaceholder: "e.g., 1:a, 3:e, 5:t",
+    fixedHint: "Format: either position:letter (e.g., for 'air': 1:a, 2:i, 3:r) or use underscores for unknown letters (e.g., a_r)",
+    fixedPlaceholder: "e.g., 1:a, 3:e, 4:t or a_et",
     search: "Search",
     searching: "Searching...",
     clearAll: "Clear All",
@@ -32,7 +32,7 @@ export const translations = {
     errorInvalidNumber: "Length must be a valid number",
     errorInvalidLength: "Length must not exceed the maximum allowed value of {max} letters",
     errorInvalidCharacters: "Input {input} contains invalid characters",
-    errorInvalidMapping: "Fixed mapping format is invalid. Use position:letter pairs separated by commas.",
+    errorInvalidMapping: "Fixed mapping format is invalid. Use position:letter pairs separated by commas or underscores for unknown letters.",
   },
   id: {
     title: "Cari Kata",
@@ -50,8 +50,8 @@ export const translations = {
     excludedHint: "Tidak boleh mengandung",
     excludedPlaceholder: "contoh: xyz",
     fixed: "Posisi Huruf",
-    fixedHint: "Format: posisi:huruf (contoh untuk kata 'air': 1:a, 2:i, 3:r)",
-    fixedPlaceholder: "contoh: 1:a, 3:e, 5:t",
+    fixedHint: "Format: posisi:huruf (contoh untuk kata 'air': 1:a, 2:i, 3:r) atau gunakan garis bawah untuk huruf yang tidak diketahui (contoh: a_r)",
+    fixedPlaceholder: "contoh: 1:a, 3:e, 4:t atau a_et",
     search: "Cari",
     searching: "Mencari...",
     clearAll: "Hapus Semua",
@@ -66,7 +66,7 @@ export const translations = {
     errorInvalidNumber: "Panjang kata harus berupa angka yang valid",
     errorInvalidLength: "Panjang kata tidak boleh melebihi {max} huruf",
     errorInvalidCharacters: "Input {input} mengandung karakter yang tidak valid",
-    errorInvalidMapping: "Format posisi huruf tidak valid. Gunakan pasangan posisi:huruf, pisahkan dengan koma.",
+    errorInvalidMapping: "Format posisi huruf tidak valid. Gunakan pasangan posisi:huruf, pisahkan dengan koma atau gunakan garis bawah untuk huruf yang tidak diketahui.",
   }
 };
 
