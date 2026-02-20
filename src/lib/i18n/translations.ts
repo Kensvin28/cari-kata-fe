@@ -33,6 +33,7 @@ export const translations = {
     errorInvalidLength: "Length must not exceed the maximum allowed value of {max} letters",
     errorInvalidCharacters: "Input {input} contains invalid characters",
     errorInvalidMapping: "Fixed mapping format is invalid. Use position:letter pairs separated by commas or underscores for unknown letters.",
+    errorFixedLengthMismatch: "Fixed positions character length does not match the length constraint.",
   },
   id: {
     title: "Cari Kata",
@@ -67,6 +68,7 @@ export const translations = {
     errorInvalidLength: "Panjang kata tidak boleh melebihi {max} huruf",
     errorInvalidCharacters: "Input {input} mengandung karakter yang tidak valid",
     errorInvalidMapping: "Format posisi huruf tidak valid. Gunakan format pasangan posisi:huruf, pisahkan dengan koma atau gunakan format garis bawah untuk huruf yang tidak diketahui.",
+    errorFixedLengthMismatch: "Panjang karakter pada input posisi huruf tidak sesuai dengan input panjang.",
   }
 };
 

@@ -39,12 +39,16 @@
 			throw new Error(t.errorInvalidCharacters.replace('{input}', t.excluded));
 		}
 
+		const numLength = Number(length);
+		if (fixed.length !== numLength) {
+			throw new Error(t.errorFixedLengthMismatch);
+		}
+
 		if (fixed && !(isValidMapping(fixed) || isValidUnderscoreMapping(fixed))) {
 			throw new Error(t.errorInvalidMapping.replace('{input}', t.fixed));
 		}
 
 		if (length) {
-			const numLength = Number(length);
 			if (!Number.isInteger(numLength)) throw new Error(t.errorInvalidNumber);
 			if (numLength < 1 || numLength > parseInt(env.PUBLIC_MAX_WORD_LENGTH))
 				throw new Error(t.errorInvalidLength.replace('{max}', env.PUBLIC_MAX_WORD_LENGTH));
@@ -220,7 +224,7 @@
 		<div class="results-panel">
 			<div class="results-header">
 				<h2>{t.results}</h2>
-				{#if isSearched}
+				{#if isSearched && !loading}
 					<span class="count">{results.length} {t.wordsFound}</span>
 				{/if}
 			</div>
