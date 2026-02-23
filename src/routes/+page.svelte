@@ -13,7 +13,7 @@
 	let results = $state<string[]>([]);
 	let loading = $state(false);
 	let error = $state('');
-	let apiUrl = $state(env.PUBLIC_API_BASE_URL); // Update this to your API URL
+	const apiUrl = env.PUBLIC_API_BASE_URL;
 	let currentLang = $state<Language>('id');
 	const t = $derived(translations[currentLang]);
 	let isSearched = $state(false);
@@ -238,7 +238,7 @@
 				<div class="results-grid">
 					{#each results as word}
 						<a
-							href={`https://kbbi.kemendikdasmen.go.id/entri/${word}`}
+							href={`https://kbbi.kemendikdasmen.go.id/entri/${encodeURIComponent(word)}`}
 							target="_blank"
 							rel="noopener noreferrer"
 						>
