@@ -3,6 +3,7 @@
 	import { translations, type Language } from '$lib/i18n/translations';
 	import { env } from '$env/dynamic/public';
 	import { isValidCharacters, isValidMapping, isValidUnderscoreMapping } from '$lib/utils';
+	import { ValidationError } from '$lib/errors';
 
 	// State variables using Svelte 5 runes
 	let prefix = $state('');
@@ -28,30 +29,29 @@
 	function validateInput() {
 		// ensure alphabetic characters only
 		if (prefix && !isValidCharacters(prefix)) {
-			throw new Error(t.errorInvalidCharacters.replace('{input}', t.prefix));
+			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.prefix));
 		}
 
 		if (required && !isValidCharacters(required)) {
-			throw new Error(t.errorInvalidCharacters.replace('{input}', t.required));
+			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.required));
 		}
 
 		if (excluded && !isValidCharacters(excluded)) {
-			throw new Error(t.errorInvalidCharacters.replace('{input}', t.excluded));
-		}
-
-		const numLength = Number(length);
-		if (fixed.length !== numLength) {
-			throw new Error(t.errorFixedLengthMismatch);
-		}
-
-		if (fixed && !(isValidMapping(fixed) || isValidUnderscoreMapping(fixed))) {
-			throw new Error(t.errorInvalidMapping.replace('{input}', t.fixed));
+			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.excluded));
 		}
 
 		if (length) {
-			if (!Number.isInteger(numLength)) throw new Error(t.errorInvalidNumber);
+			const numLength = Number(length);
+			if (!Number.isInteger(numLength)) throw new ValidationError(t.errorInvalidNumber);
+			if (fixed.length !== numLength) throw new ValidationError(t.errorFixedLengthMismatch);
 			if (numLength < 1 || numLength > parseInt(env.PUBLIC_MAX_WORD_LENGTH))
-				throw new Error(t.errorInvalidLength.replace('{max}', env.PUBLIC_MAX_WORD_LENGTH));
+				throw new ValidationError(
+					t.errorInvalidLength.replace('{max}', env.PUBLIC_MAX_WORD_LENGTH)
+				);
+		}
+
+		if (fixed && !(isValidMapping(fixed) || isValidUnderscoreMapping(fixed))) {
+			throw new ValidationError(t.errorInvalidMapping.replace('{input}', t.fixed));
 		}
 	}
 
@@ -68,18 +68,18 @@
 			if (excluded) params.append('excluded', excluded);
 			if (fixed) params.append('fixed', fixed);
 			if (params.size === 0) {
-				throw new Error(t.errorEmptyInput);
+				throw new ValidationError(t.errorEmptyInput);
 			}
 
 			const response = await fetch(`${apiUrl}/search?${params.toString()}`);
 
 			if (!response.ok) {
-				throw new Error(t.errorFetch);
+				throw new ValidationError(t.errorFetch);
 			}
 
 			results = await response.json();
 		} catch (err) {
-			error = err instanceof Error ? err.message : t.error;
+			error = err instanceof ValidationError ? err.message : t.error;
 			results = [];
 		} finally {
 			loading = false;
