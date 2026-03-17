@@ -10,6 +10,7 @@
 	let length = $state('');
 	let required = $state('');
 	let excluded = $state('');
+	let from = $state('');
 	let fixed = $state('');
 	let results = $state<string[]>([]);
 	let loading = $state(false);
@@ -40,10 +41,33 @@
 			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.excluded));
 		}
 
+		if (required && excluded) {
+			const overlap = [...new Set(required.split('').filter((char) => excluded.includes(char)))];
+			if (overlap.length > 0) {
+				throw new ValidationError(
+					t.errorConflict.replace('{letters}', overlap.join(', ')).replace('{input1}', t.required).replace('{input2}', t.excluded)
+				);
+			}
+		}
+
+		if (from && !isValidCharacters(from)) {
+			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.from));
+		}
+		
+		if (required && from) {
+			const fromSet = new Set(from.split(''));
+			const missing = [...new Set(required.split('').filter((char) => !fromSet.has(char)))];
+			if (missing.length > 0) {
+				throw new ValidationError(
+					t.errorMissing.replace('{input}', t.from).replace('{otherInput}', t.required)
+				);
+			}
+		}
+
 		if (length) {
 			const numLength = Number(length);
 			if (!Number.isInteger(numLength)) throw new ValidationError(t.errorInvalidNumber);
-			if (fixed.length !== numLength) throw new ValidationError(t.errorFixedLengthMismatch);
+			if (fixed && fixed.length !== numLength) throw new ValidationError(t.errorFixedLengthMismatch);
 			if (numLength < 1 || numLength > parseInt(env.PUBLIC_MAX_WORD_LENGTH))
 				throw new ValidationError(
 					t.errorInvalidLength.replace('{max}', env.PUBLIC_MAX_WORD_LENGTH)
@@ -52,6 +76,17 @@
 
 		if (fixed && !(isValidMapping(fixed) || isValidUnderscoreMapping(fixed))) {
 			throw new ValidationError(t.errorInvalidMapping.replace('{input}', t.fixed));
+		}
+
+		if (fixed && from) {
+			const fixedLetters = fixed.replace(/[^a-zA-Z]/g, '').split('');
+			const fromSet = new Set(from.split(''));
+			const missing = [...new Set(fixedLetters.filter((char) => !fromSet.has(char)))];
+			if (missing.length > 0) {
+				throw new ValidationError(
+					t.errorMissing.replace('{input}', t.from).replace('{otherInput}', t.fixed)
+				);
+			}
 		}
 	}
 
@@ -66,6 +101,7 @@
 			if (length) params.append('len', length);
 			if (required) params.append('required', required);
 			if (excluded) params.append('excluded', excluded);
+			if (from) params.append('bag', from);
 			if (fixed) params.append('fixed', fixed);
 			if (params.size === 0) {
 				throw new ValidationError(t.errorEmptyInput);
@@ -101,6 +137,7 @@
 		length = '';
 		required = '';
 		excluded = '';
+		from = '';
 		fixed = '';
 		results = [];
 		error = '';
@@ -192,6 +229,20 @@
 					/>
 				</div>
 
+				<div class="form-group">
+					<label for="from">
+						{t.from}
+						<span class="hint">{t.fromHint}</span>
+					</label>
+					<input
+						id="from"
+						type="text"
+						bind:value={from}
+						oninput={handleInput}
+						placeholder={t.fromPlaceholder}
+					/>
+				</div>
+
 				<div class="form-group full-width">
 					<label for="fixed">
 						{t.fixed}
@@ -236,7 +287,7 @@
 				</div>
 			{:else if results.length > 0}
 				<div class="results-grid">
-					{#each results as word}
+					{#each results as word (word)}
 						<a
 							href={`https://kbbi.kemendikdasmen.go.id/entri/${encodeURIComponent(word)}`}
 							target="_blank"

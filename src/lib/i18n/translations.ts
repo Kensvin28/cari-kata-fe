@@ -15,6 +15,9 @@ export const translations = {
     excluded: "Excluded Letters",
     excludedHint: "Must not contain",
     excludedPlaceholder: "e.g., xyz",
+    from: "From Letters",
+    fromHint: "Must be picked from",
+    fromPlaceholder: "e.g., amteria",
     fixed: "Fixed Positions",
     fixedHint: "Format: either position:letter (e.g., for 'air': 1:a, 2:i, 3:r) or use underscores for unknown letters (e.g., a_r)",
     fixedPlaceholder: "e.g., 1:a, 3:e, 4:t or a_et",
@@ -34,6 +37,8 @@ export const translations = {
     errorInvalidCharacters: "Input {input} contains invalid characters",
     errorInvalidMapping: "Fixed mapping format is invalid. Use position:letter pairs separated by commas or underscores for unknown letters.",
     errorFixedLengthMismatch: "Fixed positions character length does not match the length constraint.",
+    errorConflict: "Input {input1} and {input2} cannot contain the same letters: {letters}",
+    errorMissing: "Input {otherInput} does not match {input}"
   },
   id: {
     title: "Cari Kata",
@@ -50,6 +55,9 @@ export const translations = {
     excluded: "Tanpa Huruf",
     excludedHint: "Tidak boleh mengandung",
     excludedPlaceholder: "contoh: xyz",
+    from: "Dari Huruf",
+    fromHint: "Harus berasal dari huruf-huruf",
+    fromPlaceholder: "contoh: amteria",
     fixed: "Posisi Huruf",
     fixedHint: "Format: posisi:huruf (contoh untuk kata 'air': 1:a, 2:i, 3:r) atau gunakan garis bawah untuk huruf yang tidak diketahui (contoh: a_r)",
     fixedPlaceholder: "contoh: 1:a, 3:e, 4:t atau a_et",
@@ -69,6 +77,8 @@ export const translations = {
     errorInvalidCharacters: "Input {input} mengandung karakter yang tidak valid",
     errorInvalidMapping: "Format posisi huruf tidak valid. Gunakan format pasangan posisi:huruf, pisahkan dengan koma atau gunakan format garis bawah untuk huruf yang tidak diketahui.",
     errorFixedLengthMismatch: "Panjang karakter pada input posisi huruf tidak sesuai dengan input panjang.",
+    errorConflict: "Input {input1} dan {input2} tidak boleh sama untuk huruf: {letters}",
+    errorMissing: "Input {otherInput} tidak sesuai dengan {input}"
   }
 };
 
