@@ -67,7 +67,7 @@
 		if (length) {
 			const numLength = Number(length);
 			if (!Number.isInteger(numLength)) throw new ValidationError(t.errorInvalidNumber);
-			if (fixed && fixed.length !== numLength) throw new ValidationError(t.errorFixedLengthMismatch);
+			if (fixed && fixed.length !== numLength && fixed.includes('_')) throw new ValidationError(t.errorFixedLengthMismatch);
 			if (numLength < 1 || numLength > parseInt(env.PUBLIC_MAX_WORD_LENGTH))
 				throw new ValidationError(
 					t.errorInvalidLength.replace('{max}', env.PUBLIC_MAX_WORD_LENGTH)
