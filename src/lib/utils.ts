@@ -5,7 +5,7 @@ function isValidCharacters(input: string): boolean {
   return regex.test(input);
 }
 
-function isValidMapping(input: string): boolean {
+function isValidMapping(input: string, maxLength: number = parseInt(env.PUBLIC_MAX_WORD_LENGTH)): boolean {
   const pairs = input.split(',').map(pair => pair.trim());
   const regex = /^[1-9][0-9]*:[a-zA-Z]$/;
 
@@ -13,7 +13,7 @@ function isValidMapping(input: string): boolean {
   
   const positions = pairs.map(pair => parseInt(pair.split(':')[0]));
   // check if any position exceeds the maximum allowed word length
-  if (Math.max(...positions) > parseInt(env.PUBLIC_MAX_WORD_LENGTH)) return false;
+  if (Math.max(...positions) > maxLength) return false;
   // check if there are any duplicate positions
   const uniquePositions = new Set(positions);
   return positions.length === uniquePositions.size;

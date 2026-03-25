@@ -45,7 +45,10 @@
 			const overlap = [...new Set(required.split('').filter((char) => excluded.includes(char)))];
 			if (overlap.length > 0) {
 				throw new ValidationError(
-					t.errorConflict.replace('{letters}', overlap.join(', ')).replace('{input1}', t.required).replace('{input2}', t.excluded)
+					t.errorConflict
+						.replace('{letters}', overlap.join(', '))
+						.replace('{input1}', t.required)
+						.replace('{input2}', t.excluded)
 				);
 			}
 		}
@@ -53,7 +56,7 @@
 		if (from && !isValidCharacters(from)) {
 			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.from));
 		}
-		
+
 		if (required && from) {
 			const fromSet = new Set(from.split(''));
 			const missing = [...new Set(required.split('').filter((char) => !fromSet.has(char)))];
@@ -67,7 +70,13 @@
 		if (length) {
 			const numLength = Number(length);
 			if (!Number.isInteger(numLength)) throw new ValidationError(t.errorInvalidNumber);
-			if (fixed && fixed.length !== numLength && fixed.includes('_')) throw new ValidationError(t.errorFixedLengthMismatch);
+			if (
+				fixed &&
+				((fixed.includes('_') && fixed.length !== numLength) ||
+					(fixed.includes(':') && !isValidMapping(fixed, numLength)))
+			)
+				throw new ValidationError(t.errorFixedLengthMismatch);
+
 			if (numLength < 1 || numLength > parseInt(env.PUBLIC_MAX_WORD_LENGTH))
 				throw new ValidationError(
 					t.errorInvalidLength.replace('{max}', env.PUBLIC_MAX_WORD_LENGTH)
