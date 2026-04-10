@@ -16,7 +16,7 @@
 	<meta property="og:title" content="Cari Kata" />
 	<meta
 		property="og:description"
-		content="An advanced searching tool to find Indonesian words and phrases, helpful when playing crosswords (TTS), Wordle or Katla (the Indonesian version), Scrabble, and other word games."
+		content="An advanced searching tool to find Indonesian words and phrases."
 	/>
 	<meta property="og:image" content="https://cari-kata.kensvin28.workers.dev/header.png" />
 	<meta property="og:url" content="https://cari-kata.kensvin28.workers.dev" />
