@@ -4,6 +4,7 @@
 	import { env } from '$env/dynamic/public';
 	import { isValidCharacters, isValidMapping, isValidUnderscoreMapping } from '$lib/utils';
 	import { ValidationError } from '$lib/errors';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
 
 	// State variables using Svelte 5 runes
 	let prefix = $state('');
@@ -11,6 +12,7 @@
 	let required = $state('');
 	let excluded = $state('');
 	let from = $state('');
+	let single = $state(false);
 	let fixed = $state('');
 	let results = $state<string[]>([]);
 	let loading = $state(false);
@@ -97,6 +99,26 @@
 				);
 			}
 		}
+
+		// if single is checked, the number of words must only be 1
+		if (single && prefix) {
+			const prefixWords = prefix.split(' ').filter((s) => s.length > 0);
+			if (prefixWords.length > 1) throw new ValidationError(t.errorSingleLength);
+		}
+	}
+
+	function buildQueryParams() {
+		const params = new SvelteURLSearchParams();
+
+		if (prefix) params.append('prefix', prefix);
+		if (length) params.append('len', length);
+		if (required) params.append('required', required);
+		if (excluded) params.append('excluded', excluded);
+		if (from) params.append('bag', from);
+		if (fixed) params.append('fixed', fixed);
+		if (single) params.append('simple', '1');
+
+		return params;
 	}
 
 	async function searchWords() {
@@ -104,14 +126,8 @@
 		error = '';
 		try {
 			validateInput();
-			const params = new URLSearchParams();
+			const params = buildQueryParams();
 
-			if (prefix) params.append('prefix', prefix);
-			if (length) params.append('len', length);
-			if (required) params.append('required', required);
-			if (excluded) params.append('excluded', excluded);
-			if (from) params.append('bag', from);
-			if (fixed) params.append('fixed', fixed);
 			if (params.size === 0) {
 				throw new ValidationError(t.errorEmptyInput);
 			}
@@ -147,6 +163,7 @@
 		required = '';
 		excluded = '';
 		from = '';
+		single = false;
 		fixed = '';
 		results = [];
 		error = '';
@@ -250,6 +267,14 @@
 						oninput={handleInput}
 						placeholder={t.fromPlaceholder}
 					/>
+				</div>
+
+				<div class="checkbox-group">
+					<label for="single" class="checkbox-label">
+						{t.single}
+						<span class="tooltip" data-tooltip={t.singleHint}>?</span>
+					</label>
+					<input id="single" type="checkbox" bind:checked={single} oninput={handleInput} />
 				</div>
 
 				<div class="form-group full-width">
@@ -402,6 +427,24 @@
 		flex-direction: column;
 	}
 
+	.checkbox-group {
+		display: flex;
+		flex-direction: row-reverse;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.5rem;
+		padding-top: 3.3rem;
+	}
+
+	.checkbox-label {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+		margin-bottom: 0.2rem;
+		font-weight: 600;
+		color: #333;
+	}
+
 	.full-width {
 		grid-column: 1 / -1;
 	}
@@ -433,6 +476,15 @@
 		outline: none;
 		border-color: #667eea;
 		box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+	}
+
+	input[type='checkbox'] {
+		width: 20px;
+		height: 20px;
+		border: 2px solid #e0e0e0;
+		border-radius: 4px;
+		cursor: pointer;
+		position: relative;
 	}
 
 	.actions {
@@ -571,6 +623,11 @@
 		font-size: 1.1rem;
 	}
 
+	.tooltip {
+		display: none;
+	}
+
+	/* Mobile display */
 	@media (max-width: 640px) {
 		h1 {
 			font-size: 2rem;
@@ -600,6 +657,11 @@
 
 		.results-grid {
 			grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+		}
+
+		.checkbox-group {
+			flex-direction: row-reverse;
+			padding-top: 0;
 		}
 	}
 </style>

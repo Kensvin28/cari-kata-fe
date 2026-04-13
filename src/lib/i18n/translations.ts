@@ -18,6 +18,8 @@ export const translations = {
     from: "From Letters",
     fromHint: "Must be picked from",
     fromPlaceholder: "e.g., amteria",
+    single: "Single Words Only",
+    singleHint: "Check if not searching for single words made up of two or more words (e.g., rumah sakit, meja makan)",
     fixed: "Fixed Positions",
     fixedHint: "Format: either position:letter (e.g., for 'air': 1:a, 2:i, 3:r) or use underscores for unknown letters (e.g., a_r)",
     fixedPlaceholder: "e.g., 1:a, 3:e, 4:t or a_et",
@@ -38,7 +40,8 @@ export const translations = {
     errorInvalidMapping: "Fixed mapping format is invalid. Use position:letter pairs separated by commas or underscores for unknown letters.",
     errorFixedLengthMismatch: "Fixed positions character length does not match the length constraint.",
     errorConflict: "Input {input1} and {input2} cannot contain the same letters: {letters}",
-    errorMissing: "Input {otherInput} does not match {input}"
+    errorMissing: "Input {otherInput} does not match {input}",
+    errorSingleLength: "Prefix cannot contain multiple words when 'Single Words Only' is checked"
   },
   id: {
     title: "Cari Kata",
@@ -58,6 +61,8 @@ export const translations = {
     from: "Dari Huruf",
     fromHint: "Harus berasal dari huruf-huruf",
     fromPlaceholder: "contoh: amteria",
+    single: "Kata Tunggal Saja",
+    singleHint: "Centang jika tidak mencari kata majemuk yang terdiri dari dua kata atau lebih (contoh: rumah sakit, meja makan)",
     fixed: "Posisi Huruf",
     fixedHint: "Format: posisi:huruf (contoh untuk kata 'air': 1:a, 2:i, 3:r) atau gunakan garis bawah untuk huruf yang tidak diketahui (contoh: a_r)",
     fixedPlaceholder: "contoh: 1:a, 3:e, 4:t atau a_et",
@@ -78,7 +83,8 @@ export const translations = {
     errorInvalidMapping: "Format posisi huruf tidak valid. Gunakan format pasangan posisi:huruf, pisahkan dengan koma atau gunakan format garis bawah untuk huruf yang tidak diketahui.",
     errorFixedLengthMismatch: "Panjang karakter pada input posisi huruf tidak sesuai dengan input panjang.",
     errorConflict: "Input {input1} dan {input2} tidak boleh sama untuk huruf: {letters}",
-    errorMissing: "Input {otherInput} tidak sesuai dengan {input}"
+    errorMissing: "Input {otherInput} tidak sesuai dengan {input}",
+    errorSingleLength: "Awalan tidak boleh mengandung lebih dari satu kata jika 'Kata Tunggal Saja' dicentang"
   }
 };
 
