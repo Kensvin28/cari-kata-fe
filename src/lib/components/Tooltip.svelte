@@ -58,11 +58,10 @@
 		transform: translateX(-50%);
 
 		width: max-content;
-		max-width: 150px;
+		max-width: 200px;
 		white-space: normal;
 		word-wrap: break-word;
-		text-align: center;
-		max-width: 50vw;
+		text-align: left;
 
 		background-color: #333;
 		color: white;
