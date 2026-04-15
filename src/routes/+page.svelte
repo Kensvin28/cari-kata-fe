@@ -610,6 +610,7 @@
 		color: #333;
 		border: 2px solid transparent;
 		transition: all 0.2s;
+		word-break: break-word;
 	}
 
 	.word-card:hover {
