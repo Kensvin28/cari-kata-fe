@@ -5,6 +5,7 @@
 	import { isValidCharacters, isValidMapping, isValidUnderscoreMapping } from '$lib/utils';
 	import { ValidationError } from '$lib/errors';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import Tooltip from '../lib/components/Tooltip.svelte';
 
 	// State variables using Svelte 5 runes
 	let prefix = $state('');
@@ -271,8 +272,9 @@
 
 				<div class="checkbox-group">
 					<label for="single" class="checkbox-label">
-						{t.single}
-						<span class="tooltip" data-tooltip={t.singleHint}>?</span>
+						<Tooltip content={t.singleHint} forId="single">
+							{t.single}
+						</Tooltip>
 					</label>
 					<input id="single" type="checkbox" bind:checked={single} oninput={handleInput} />
 				</div>
