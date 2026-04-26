@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { translations, type Language } from '$lib/i18n/translations';
 	import { env } from '$env/dynamic/public';
+	import { translations, type Language } from '$lib/i18n/translations';
 	import { isValidCharacters, isValidMapping, isValidUnderscoreMapping } from '$lib/utils';
 	import { ValidationError } from '$lib/errors';
 	import { SvelteURLSearchParams } from 'svelte/reactivity';
@@ -44,6 +44,10 @@
 			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.excluded));
 		}
 
+		if (from && !isValidCharacters(from)) {
+			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.from));
+		}
+
 		if (required && excluded) {
 			const overlap = [...new Set(required.split('').filter((char) => excluded.includes(char)))];
 			if (overlap.length > 0) {
@@ -56,10 +60,6 @@
 			}
 		}
 
-		if (from && !isValidCharacters(from)) {
-			throw new ValidationError(t.errorInvalidCharacters.replace('{input}', t.from));
-		}
-
 		if (required && from) {
 			const fromSet = new Set(from.split(''));
 			const missing = [...new Set(required.split('').filter((char) => !fromSet.has(char)))];
@@ -70,7 +70,7 @@
 			}
 		}
 
-		if (length) {
+		if (length !== '') {
 			const numLength = Number(length);
 			if (!Number.isInteger(numLength)) throw new ValidationError(t.errorInvalidNumber);
 			if (
@@ -178,172 +178,169 @@
 	});
 </script>
 
-<main>
-	<div class="container">
-		<header>
-			<div class="header-content">
-				<div>
-					<h1>🔍 {t.title}</h1>
-					<p class="subtitle">{t.subtitle}</p>
-				</div>
-				<button
-					class="lang-toggle"
-					onclick={toggleLanguage}
-					title={currentLang === 'en' ? 'Ganti ke bahasa Indonesia' : 'Switch to English'}
-				>
-					{currentLang === 'en' ? 'ID' : 'EN'}
-				</button>
-			</div>
-		</header>
+<main class="container">
+	<header class="header-content">
+		<div>
+			<h1>🔍 {t.title}</h1>
+			<p id="subtitle">{t.subtitle}</p>
+		</div>
+		<button
+			class="lang-toggle"
+			onclick={toggleLanguage}
+			title={currentLang === 'en' ? 'Ganti ke bahasa Indonesia' : 'Switch to English'}
+		>
+			{currentLang === 'en' ? 'ID' : 'EN'}
+		</button>
+	</header>
 
-		<div class="search-panel">
-			<div class="form-grid">
-				<div class="form-group">
-					<label for="prefix">
-						{t.prefix}
-						<span class="hint">{t.prefixHint}</span>
-					</label>
-					<input
-						id="prefix"
-						type="text"
-						bind:value={prefix}
-						oninput={handleInput}
-						placeholder={t.prefixPlaceholder}
-					/>
-				</div>
-
-				<div class="form-group">
-					<label for="length">
-						{t.length}
-						<span class="hint">{t.lengthHint}</span>
-					</label>
-					<input
-						id="length"
-						type="number"
-						bind:value={length}
-						oninput={handleInput}
-						placeholder={t.lengthPlaceholder}
-						min="1"
-						max={env.PUBLIC_MAX_WORD_LENGTH}
-					/>
-				</div>
-
-				<div class="form-group">
-					<label for="required">
-						{t.required}
-						<span class="hint">{t.requiredHint}</span>
-					</label>
-					<input
-						id="required"
-						type="text"
-						bind:value={required}
-						oninput={handleInput}
-						placeholder={t.requiredPlaceholder}
-					/>
-				</div>
-
-				<div class="form-group">
-					<label for="excluded">
-						{t.excluded}
-						<span class="hint">{t.excludedHint}</span>
-					</label>
-					<input
-						id="excluded"
-						type="text"
-						bind:value={excluded}
-						oninput={handleInput}
-						placeholder={t.excludedPlaceholder}
-					/>
-				</div>
-
-				<div class="form-group">
-					<label for="from">
-						{t.from}
-						<span class="hint">{t.fromHint}</span>
-					</label>
-					<input
-						id="from"
-						type="text"
-						bind:value={from}
-						oninput={handleInput}
-						placeholder={t.fromPlaceholder}
-					/>
-				</div>
-
-				<div class="checkbox-group">
-					<label for="single" class="checkbox-label">
-						<Tooltip content={t.singleHint} forId="single">
-							{t.single}
-						</Tooltip>
-					</label>
-					<input id="single" type="checkbox" bind:checked={single} oninput={handleInput} />
-				</div>
-
-				<div class="form-group full-width">
-					<label for="fixed">
-						{t.fixed}
-						<span class="hint">{t.fixedHint}</span>
-					</label>
-					<input
-						id="fixed"
-						type="text"
-						bind:value={fixed}
-						oninput={handleInput}
-						placeholder={t.fixedPlaceholder}
-					/>
-				</div>
+	<search class="search-panel">
+		<div class="form-grid">
+			<div class="form-group">
+				<label for="prefix">
+					{t.prefix}
+					<span class="hint">{t.prefixHint}</span>
+				</label>
+				<input
+					id="prefix"
+					type="text"
+					bind:value={prefix}
+					oninput={handleInput}
+					placeholder={t.prefixPlaceholder}
+				/>
 			</div>
 
-			<div class="actions">
-				<button class="btn btn-primary" onclick={searchWords} disabled={loading}>
-					{loading ? t.searching : t.search}
-				</button>
-				<button class="btn btn-secondary" onclick={clearFilters}> {t.clearAll} </button>
+			<div class="form-group">
+				<label for="length">
+					{t.length}
+					<span class="hint">{t.lengthHint}</span>
+				</label>
+				<input
+					id="length"
+					type="number"
+					bind:value={length}
+					oninput={handleInput}
+					placeholder={t.lengthPlaceholder}
+					min="1"
+					max={env.PUBLIC_MAX_WORD_LENGTH}
+				/>
+			</div>
+
+			<div class="form-group">
+				<label for="required">
+					{t.required}
+					<span class="hint">{t.requiredHint}</span>
+				</label>
+				<input
+					id="required"
+					type="text"
+					bind:value={required}
+					oninput={handleInput}
+					placeholder={t.requiredPlaceholder}
+				/>
+			</div>
+
+			<div class="form-group">
+				<label for="excluded">
+					{t.excluded}
+					<span class="hint">{t.excludedHint}</span>
+				</label>
+				<input
+					id="excluded"
+					type="text"
+					bind:value={excluded}
+					oninput={handleInput}
+					placeholder={t.excludedPlaceholder}
+				/>
+			</div>
+
+			<div class="form-group">
+				<label for="from">
+					{t.from}
+					<span class="hint">{t.fromHint}</span>
+				</label>
+				<input
+					id="from"
+					type="text"
+					bind:value={from}
+					oninput={handleInput}
+					placeholder={t.fromPlaceholder}
+				/>
+			</div>
+
+			<div class="checkbox-group">
+				<label for="single" class="checkbox-label">
+					<Tooltip content={t.singleHint} forId="single">
+						{t.single}
+					</Tooltip>
+				</label>
+				<input id="single" type="checkbox" bind:checked={single} oninput={handleInput} />
+			</div>
+
+			<div class="form-group full-width">
+				<label for="fixed">
+					{t.fixed}
+					<span class="hint">{t.fixedHint}</span>
+				</label>
+				<input
+					id="fixed"
+					type="text"
+					bind:value={fixed}
+					oninput={handleInput}
+					placeholder={t.fixedPlaceholder}
+				/>
 			</div>
 		</div>
 
-		{#if error}
-			<div class="error-message">
-				⚠️ {error}
-			</div>
-		{/if}
+		<div class="actions">
+			<button class="btn btn-primary" onclick={searchWords} disabled={loading}>
+				{loading ? t.searching : t.search}
+			</button>
+			<button class="btn btn-secondary" onclick={clearFilters}> {t.clearAll} </button>
+		</div>
+	</search>
 
-		<div class="results-panel">
-			<div class="results-header">
-				<h2>{t.results}</h2>
-				{#if isSearched && !loading}
-					<span class="count">{results.length} {t.wordsFound}</span>
-				{/if}
-			</div>
+	{#if error}
+		<div id="error-message" role="alert">
+			⚠️ {error}
+		</div>
+	{/if}
 
-			{#if loading}
-				<div class="loading">
-					<div class="spinner"></div>
-					<p>{t.searchingWords}</p>
-				</div>
-			{:else if results.length > 0}
-				<div class="results-grid">
-					{#each results as word (word)}
-						<a
-							href={`https://kbbi.kemendikdasmen.go.id/entri/${encodeURIComponent(word)}`}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							<div class="word-card">{word}</div>
-						</a>
-					{/each}
-				</div>
-			{:else if results.length === 0 && isSearched}
-				<div class="empty-state">
-					<p>{t.noWordsFound}</p>
-				</div>
-			{:else if !error}
-				<div class="empty-state">
-					<p>{t.enterCriteria}</p>
-				</div>
+	<section class="results-panel">
+		<div class="results-header">
+			<h2>{t.results}</h2>
+			{#if isSearched && !loading}
+				<span class="count">{results.length} {t.wordsFound}</span>
 			{/if}
 		</div>
-	</div>
+
+		{#if loading}
+			<div class="loading">
+				<div class="spinner"></div>
+				<p>{t.searchingWords}</p>
+			</div>
+		{:else if results.length > 0}
+			<div class="results-grid">
+				{#each results as word (word)}
+					<a
+						class="word-card"
+						href={`https://kbbi.kemendikdasmen.go.id/entri/${encodeURIComponent(word)}`}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{word}
+					</a>
+				{/each}
+			</div>
+		{:else if results.length === 0 && isSearched}
+			<div class="empty-state">
+				<p>{t.noWordsFound}</p>
+			</div>
+		{:else if !error}
+			<div class="empty-state">
+				<p>{t.enterCriteria}</p>
+			</div>
+		{/if}
+	</section>
 </main>
 
 <style>
@@ -384,7 +381,7 @@
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 	}
 
-	.subtitle {
+	#subtitle {
 		margin: 0.5rem 0.5rem 0;
 		font-size: 1.1rem;
 		opacity: 0.95;
@@ -463,7 +460,7 @@
 	.hint {
 		font-size: 0.75rem;
 		font-weight: 400;
-		color: #666;
+		color: #777;
 	}
 
 	input {
@@ -529,7 +526,7 @@
 		background: #e0e0e0;
 	}
 
-	.error-message {
+	#error-message {
 		background: #fee;
 		color: #c33;
 		padding: 1rem;
@@ -576,7 +573,7 @@
 		align-items: center;
 		justify-content: center;
 		padding: 3rem;
-		color: #666;
+		color: #777;
 	}
 
 	.spinner {
@@ -624,10 +621,6 @@
 		padding: 3rem;
 		color: #999;
 		font-size: 1.1rem;
-	}
-
-	.tooltip {
-		display: none;
 	}
 
 	/* Mobile display */
